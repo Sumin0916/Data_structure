@@ -128,7 +128,7 @@ class CircularDoublyLinkedList:
             tempList.__head.prev.next = self.__head
             self.__numItems += tempList.__numItems
         else:
-            for item in self:
+            for item in canIterate:
                 self.append(item)
         return self
 
