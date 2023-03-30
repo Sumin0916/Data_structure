@@ -1,2 +1,2 @@
 *.tsv
-*.pyc
+/__pycache__/
