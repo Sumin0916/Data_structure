@@ -1,8 +1,8 @@
 from heapq import heappop, heappush
 
 class BidirectNode:
-    def __init__(self, x, prevNode: 'BidirectNode', nextNode:'BidirectNode'):
-        self.item = x
+    def __init__(self, item: dict, prevNode: 'BidirectNode', nextNode:'BidirectNode'):
+        self.item = item
         self.prev = prevNode
         self.next = nextNode
 
@@ -180,3 +180,6 @@ class CircularLinkedListIterator: #'CircularDoublyLinkedList' 순회자 객체
             item = self.iterPosition.item
             self.iterPosition = self.iterPosition.next
             return item
+
+# class CircularDoublyLinkedListFilter:
+
