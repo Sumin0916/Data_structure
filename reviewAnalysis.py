@@ -1,50 +1,47 @@
 """
-Git Repo: https://github.com/eunjicious/ds_2023
-Document: https://docs.google.com/document/d/1irCSyXrV5c-3ILwiZLjVdHW6ionR0e4kuo506ZYbaJA/edit
+Goal: 가장 많이 팔린 제품 리뷰 중 유용한 투표를 많이 받은 상위 5개를 출력(구매한 사람들)
 """
 
-"""
-Goal: 제품별로 리뷰에서 가장 많이 나온 단어들중 상위 10개를 출력한다.
-p1 : 파인드 함수를 가진 객체를 어떻게 활용해 필터를 할 것인가.
-"""
-
-from circulardoublylinkedlist import CircularDoublyLinkedList
-import collections
-
-CATEGORY_NUM = {
-    "marketplace" : 0,
-    "customer_id" : 1,
-    "review_id"	: 2,
-    "product_id" : 3,
-    "product_parent" : 4,
-    "product_title" : 5,
-    "product_category" : 6,
-    "star_rating" : 7,
-    "helpful_votes" : 8,
-    "total_votes" : 9,
-    "vine" : 10,
-    "verified_purchase" : 11,
-    "review_headline" : 12,
-    "review_body" : 13,
-    "review_date" : 14
-}
+from circulardoublylinkedlist import CircularDoublyLinkedList, CircularDoublyLinkedListFilter, CATEGORY_NUM, NUM_OF_CATEGORY
+from itertools import groupby
+from operator import itemgetter
+from pprint import pprint
 
 def load_data(dataset: CircularDoublyLinkedList):
-    title_dict = dict()
-    with open('amazon_reviews_us_Shoes_v1_00_40k.tsv', 'r', encoding='utf-8') as file:
+    t = {}
+    with open('test.tsv', 'r', encoding='utf-8') as file:
+        next(file)
         for line in file:
             fields = line.split('\t')
-            if fields[CATEGORY_NUM["product_title"]] not in title_dict:
-                title_dict[fields[CATEGORY_NUM["product_title"]]] = 1
+            if fields[CATEGORY_NUM["product_title"]] not in t:
+                t[fields[CATEGORY_NUM["product_title"]]] = 1
             else:
-                title_dict[fields[CATEGORY_NUM["product_title"]]] += 1
-        
-        print(sorted(title_dict.items(), key=lambda x:x[1],reverse=True)[:10])
-# def get_data(dataset: CircularDoublyLinkedList):
-#     filtered = dataset.filter(CircularDoublyLinkedListFilter()) 
-# 저 클래스는 Find 함수를 가졌음. 특정 조건 노드를 찾아 리스트로 만들어 리턴함
+                t[fields[CATEGORY_NUM["product_title"]]] += 1
+            for i in range(NUM_OF_CATEGORY):
+                dataset.append(fields[i], i)
+
+def get_data(dataset: CircularDoublyLinkedList, filter_str, group_by, top):
+    res_dict = {}
+    filtered = dataset.filter(CircularDoublyLinkedListFilter(filter_str))
+    print(filtered)
+    filtered = sorted(filtered, key=(itemgetter(CATEGORY_NUM[group_by])))
+    group_data = groupby(filtered, key=itemgetter(CATEGORY_NUM[group_by]))
+    for key, group_data in group_data:
+        res_dict[key] = list(group_data)
+    group_sorted = sorted(res_dict.items(), key=lambda x: len(x[1]), reverse=True)
+    for ind in range(top):
+        group_name = group_sorted[ind][0]
+        product_group = group_sorted[ind][1]
+        product_group.sort(key=lambda x: int(x[CATEGORY_NUM['helpful_votes']]), reverse=True)
+        print(f"-------- {group_by} : {group_name} --------")
+        for j in range(top):
+            review_title = product_group[j][CATEGORY_NUM['review_headline']]
+            review_body = product_group[j][CATEGORY_NUM['review_body']]
+            helpful = product_group[j][CATEGORY_NUM['helpful_votes']]
+            print(f"<{j+1}th Review : {review_title}>\n* {review_body}\n- helpful_votes : {helpful}")
 
 if __name__ == '__main__':
     dataset = CircularDoublyLinkedList()
     load_data(dataset)
-    #get_data(dataset)
+    #get_data(dataset, "verified_purchase == Y", "product_title", 5)
+    get_data(dataset, "helpful_votes > 10", "product_id", 5)

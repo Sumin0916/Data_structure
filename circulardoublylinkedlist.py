@@ -1,6 +1,26 @@
 from bidirectnode import BidirectNode
 from heapq import heappop, heappush
 
+CATEGORY_NUM = {
+    "marketplace" : 0,
+    "customer_id" : 1,
+    "review_id"	: 2,
+    "product_id" : 3,
+    "product_parent" : 4,
+    "product_title" : 5,
+    "product_category" : 6,
+    "star_rating" : 7,
+    "helpful_votes" : 8,
+    "total_votes" : 9,
+    "vine" : 10,
+    "verified_purchase" : 11,
+    "review_headline" : 12,
+    "review_body" : 13,
+    "review_date" : 14
+}
+
+NUM_OF_CATEGORY = 15
+
 class CircularDoublyLinkedList:
     def __init__(self, *arg):
         self.__head = BidirectNode(None, None, None)
@@ -44,9 +64,9 @@ class CircularDoublyLinkedList:
             print(f"index : {i} is out of boundery")
         return None
 
-    def append(self, newItem) -> None: #무조건 추가 가능
+    def append(self, newItem, key=-1) -> None: #무조건 추가 가능
         prev = self.__head.prev
-        newNode = BidirectNode(newItem, prev, self.__head)
+        newNode = BidirectNode(newItem, prev, self.__head, key)
         self.__head.prev = newNode
         prev.next = newNode
         self.__numItems += 1
@@ -168,7 +188,7 @@ class CircularDoublyLinkedList:
         if 'find' not in dir(haveFindClass):
             print(f"{typeArgu}:{typeArgu.__name__} has no 'find' function.")
             return
-        haveFindClass.find(self)
+        return haveFindClass.find(self)
 
     
 class CircularLinkedListIterator: #'CircularDoublyLinkedList' 순회자 객체
@@ -180,7 +200,7 @@ class CircularLinkedListIterator: #'CircularDoublyLinkedList' 순회자 객체
         if self.iterPosition == self.__head:
             raise StopIteration
         else:
-            item = self.iterPosition.item
+            item = [self.iterPosition.key, self.iterPosition.value]
             self.iterPosition = self.iterPosition.next
             return item
 
@@ -190,8 +210,31 @@ find 함수에서는 circularDoublyLinkedList 에 저장된 데이터 중 특정
 """
 
 class CircularDoublyLinkedListFilter: #CDL를 검색할 수 있게 해주는 도구 느낌??
-    def __init__(self):
-        self.result = None
-    def find(self, category : int) -> list:
+    def __init__(self, *conditions : str):
+        self.result = list()
+        self.conditions = conditions
 
+    def find(self, dataset : 'CircularDoublyLinkedList') -> list:
+        count_node = 0
+        line_list = list()
+        filterd = False
+        for key, value in dataset:
+            count_node += 1
+            line_list.append(value)
+            if count_node % NUM_OF_CATEGORY == 0 and line_list: #라인별 초기화 구문
+                if not filterd:
+                    self.result.append(line_list)
+                line_list = list()
+                filtered = True
 
+            for con_str in self.conditions:
+                left, operator, right = con_str.split(' ')
+                if CATEGORY_NUM[left] == key:
+                    if 'A' < value < 'z':
+                        if value == right:
+                            filtered = False
+                    elif eval(''.join([value, operator, right])):
+                        print(value, operator, right, eval(''.join([value, operator, right])))
+                        filtered = False
+
+        return self.result
