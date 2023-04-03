@@ -217,15 +217,15 @@ class CircularDoublyLinkedListFilter: #CDL를 검색할 수 있게 해주는 도
     def find(self, dataset : 'CircularDoublyLinkedList') -> list:
         count_node = 0
         line_list = list()
-        filterd = False
+        filtered = True
         for key, value in dataset:
             count_node += 1
             line_list.append(value)
             if count_node % NUM_OF_CATEGORY == 0 and line_list: #라인별 초기화 구문
-                if not filterd:
+                if not filtered:
                     self.result.append(line_list)
+                    filtered = True
                 line_list = list()
-                filtered = True
 
             for con_str in self.conditions:
                 left, operator, right = con_str.split(' ')
@@ -234,7 +234,6 @@ class CircularDoublyLinkedListFilter: #CDL를 검색할 수 있게 해주는 도
                         if value == right:
                             filtered = False
                     elif eval(''.join([value, operator, right])):
-                        print(value, operator, right, eval(''.join([value, operator, right])))
                         filtered = False
 
         return self.result
