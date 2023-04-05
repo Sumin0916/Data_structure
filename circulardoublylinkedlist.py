@@ -204,12 +204,8 @@ class CircularLinkedListIterator: #'CircularDoublyLinkedList' 순회자 객체
             self.iterPosition = self.iterPosition.next
             return item
 
-"""
-find 함수에서는 circularDoublyLinkedList 에 저장된 데이터 중 특정 조건을 만족하는 Node 를 찾아 
-파이썬의 내장 자료구조인 리스트로 만들어 return 함. 
-"""
 
-class CircularDoublyLinkedListFilter: #CDL를 검색할 수 있게 해주는 도구 느낌??
+class CircularDoublyLinkedListFilter:
     def __init__(self, *conditions : str):
         self.result = list()
         self.conditions = conditions
@@ -221,7 +217,7 @@ class CircularDoublyLinkedListFilter: #CDL를 검색할 수 있게 해주는 도
         for key, value in dataset:
             count_node += 1
             line_list.append(value)
-            if count_node % NUM_OF_CATEGORY == 0 and line_list: #라인별 초기화 구문
+            if count_node % NUM_OF_CATEGORY == 0 and line_list:
                 if not filtered:
                     self.result.append(line_list)
                     filtered = True
