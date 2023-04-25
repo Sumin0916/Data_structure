@@ -4,15 +4,25 @@ class Heap:
         if len(arg) != 0:
             self.__A = arg[0]
         self.__numItems = 0
+        self.__dictItems = dict()
 
-    def insert(self, x):
-        self.__A.append(x)
-        self.__numItems += 1
-        self.__percolateUp(self.__numItems-1)
+    def cacheInsert(self, x):
+        if not self.isCached(x):
+            self.__dictItems[x] = 1
+            self.__A.append(x)
+            self.__numItems += 1
+            self.__percolateUp(self.__numItems-1)
+        else:
+            self.__dictItems[x] += 1
+
+    def isCached(self, x):
+        if self.__dictItems.get(x) != None:
+            return True
+        return False
 
     def __percolateUp(self, ind:int):
         parent = (ind-1)//2
-        if (-1 < ind < self.__numItems) and (self.__A[parent] < self.__A[ind]):
+        if (-1 < ind < self.__numItems) and (self.__dictItems[self.__A[parent]] < self.__dictItems[self.__A[ind]]):
             self.__A[parent], self.__A[ind] = self.__A[ind], self.__A[parent]
             self.__percolateUp(parent)
     
@@ -20,7 +30,7 @@ class Heap:
         child = 2*ind + 1
         rchild = 2*ind + 2
         if child < self.__numItems:
-            if (rchild < self.__numItems) and (self.__A[child] < self.__A[rchild]):
+            if (rchild < self.__numItems) and (self.__dictItems[self.__A[child]] < self.__dictItems[self.__A[rchild]]):
                 child = rchild
             if self.__A[child] > self.__A[ind]:
                 self.__A[child], self.__A[ind] = self.__A[ind], self.__A[child]
@@ -29,12 +39,26 @@ class Heap:
     def deleteMax(self):
         if not self.isEmpty():
             rm = self.__A[0]
+            self.__dictItems.pop(rm)
             self.__A[0] = self.__A.pop()
             self.__numItems -= 1
             self.__percolateDown(0)
             return rm
         else:
             print("There is no elements")
+
+    def deleteMin(self):
+        if self.__numItems > 1:
+            self.__numItems -= 1
+            return self.__dictItems.pop(self.__A.pop())
+        else:
+            print("There is no elements")
+        return None
+
+    def findCount(self, x):
+        if x in self.__dictItems:
+            return self.__dictItems[x]
+        return 0
 
     def max(self):
         return self.__A[0]
@@ -50,6 +74,7 @@ class Heap:
     def clear(self):
         self.__A = []
         self.__numItems = 0
+        self.__dictItems = dict()
     
     def size(self):
         return self.__numItems
@@ -74,7 +99,3 @@ class Heap:
                     print_lst[step + (step*(ind))] = str(self.__A[ind])
             print(' '.join(print_lst))
         print("=================================================")
-
-
-
-
