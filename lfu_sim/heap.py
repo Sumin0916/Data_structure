@@ -6,14 +6,17 @@ class Heap:
         self.__numItems = 0
         self.__dictItems = dict()
 
-    def cacheInsert(self, x):
-        if not self.isCached(x):
-            self.__dictItems[x] = 1
-            self.__A.append(x)
-            self.__numItems += 1
-            self.__percolateUp(self.__numItems-1)
-        else:
-            self.__dictItems[x] += 1
+    def cacheInsert(self, x, cache_size) -> bool:
+        if (self.__numItems >= cache_size):
+            return False
+        self.__dictItems[x] = 1
+        self.__A.append(x)
+        self.__numItems += 1
+        self.__percolateUp(self.__numItems-1)
+        return True
+
+    def cacheHit(self, x):
+        self.__dictItems[x] += 1
 
     def isCached(self, x):
         if self.__dictItems.get(x) != None:
@@ -55,10 +58,8 @@ class Heap:
             print("There is no elements")
         return None
 
-    def findCount(self, x):
-        if x in self.__dictItems:
-            return self.__dictItems[x]
-        return 0
+    def findInd(self, x):
+        
 
     def max(self):
         return self.__A[0]
