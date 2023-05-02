@@ -15,8 +15,8 @@ class Heap:
         if self.__dictAdress.get(x) == None:
             self.__dictAdress[x] = 0
         self.__dictAdress[x] += 1
-        self.__percolateUp(self.__numItems)
         self.__numItems += 1
+        self.__percolateUp(self.__numItems-1)
         return True
 
     def cacheHit(self, x):
@@ -33,9 +33,9 @@ class Heap:
 
     def __percolateUp(self, ind:int):
         parent = (ind-1)//2
-        if (-1 < ind < self.__numItems) and (self.__dictAdress[self.__A[parent]] > self.__dictAdress[self.__A[ind]]):
+        if (0 < ind < self.__numItems) and (self.__dictAdress[self.__A[parent]] > self.__dictAdress[self.__A[ind]]):
             self.__A[parent], self.__A[ind] = self.__A[ind], self.__A[parent]
-            self.__percolateUp(parent)
+            self._ _percolateUp(parent)
     
     def __percolateDown(self, ind:int):
         child = 2*ind + 1
