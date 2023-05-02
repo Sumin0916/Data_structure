@@ -35,7 +35,7 @@ class Heap:
         parent = (ind-1)//2
         if (0 < ind < self.__numItems) and (self.__dictAdress[self.__A[parent]] > self.__dictAdress[self.__A[ind]]):
             self.__A[parent], self.__A[ind] = self.__A[ind], self.__A[parent]
-            self._ _percolateUp(parent)
+            self.__percolateUp(parent)
     
     def __percolateDown(self, ind:int):
         child = 2*ind + 1
