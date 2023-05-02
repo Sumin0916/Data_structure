@@ -4,28 +4,36 @@ class Heap:
         if len(arg) != 0:
             self.__A = arg[0]
         self.__numItems = 0
-        self.__dictItems = dict()
+        self.__dictAdress = dict()
+        self.__dictCache = dict()
 
     def cacheInsert(self, x, cache_size) -> bool:
         if (self.__numItems >= cache_size):
             return False
-        self.__dictItems[x] = 1
         self.__A.append(x)
+        self.__dictCache[x] = True
+        if self.__dictAdress.get(x) == None:
+            self.__dictAdress[x] = 0
+        self.__dictAdress[x] += 1
+        self.__percolateUp(self.__numItems)
         self.__numItems += 1
-        self.__percolateUp(self.__numItems-1)
         return True
 
     def cacheHit(self, x):
-        self.__dictItems[x] += 1
-
+        self.__dictAdress[x] += 1
+        self.__percolateDown(self.find_ind(x))
+    
     def isCached(self, x):
-        if self.__dictItems.get(x) != None:
+        if self.__dictCache.get(x) != None:
             return True
         return False
 
+    def find_ind(self, x):
+        return self.__A.index(x)
+
     def __percolateUp(self, ind:int):
         parent = (ind-1)//2
-        if (-1 < ind < self.__numItems) and (self.__dictItems[self.__A[parent]] < self.__dictItems[self.__A[ind]]):
+        if (-1 < ind < self.__numItems) and (self.__dictAdress[self.__A[parent]] > self.__dictAdress[self.__A[ind]]):
             self.__A[parent], self.__A[ind] = self.__A[ind], self.__A[parent]
             self.__percolateUp(parent)
     
@@ -33,33 +41,22 @@ class Heap:
         child = 2*ind + 1
         rchild = 2*ind + 2
         if child < self.__numItems:
-            if (rchild < self.__numItems) and (self.__dictItems[self.__A[child]] < self.__dictItems[self.__A[rchild]]):
+            if (rchild < self.__numItems) and (self.__dictAdress[self.__A[child]] > self.__dictAdress[self.__A[rchild]]):
                 child = rchild
-            if self.__A[child] > self.__A[ind]:
+            if self.__dictAdress[self.__A[child]] < self.__dictAdress[self.__A[ind]]:
                 self.__A[child], self.__A[ind] = self.__A[ind], self.__A[child]
                 self.__percolateDown(child)
 
-    def deleteMax(self):
+    def lfuDel(self):
         if not self.isEmpty():
             rm = self.__A[0]
-            self.__dictItems.pop(rm)
+            self.__dictCache.pop(rm)
             self.__A[0] = self.__A.pop()
             self.__numItems -= 1
             self.__percolateDown(0)
             return rm
         else:
             print("There is no elements")
-
-    def deleteMin(self):
-        if self.__numItems > 1:
-            self.__numItems -= 1
-            return self.__dictItems.pop(self.__A.pop())
-        else:
-            print("There is no elements")
-        return None
-
-    def findInd(self, x):
-        
 
     def max(self):
         return self.__A[0]
@@ -75,7 +72,7 @@ class Heap:
     def clear(self):
         self.__A = []
         self.__numItems = 0
-        self.__dictItems = dict()
+        self.__dictAdress = dict()
     
     def size(self):
         return self.__numItems
