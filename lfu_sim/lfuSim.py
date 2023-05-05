@@ -4,7 +4,7 @@ def lfu_sim(cache_slots):
   cache_hit = 0
   tot_cnt = 0
 
-  with open("C:\\Users\\PC\\Desktop\\2-1\\Data_structure\\lfu_sim\\linkbench.trc", 'r') as data_file:
+  with open("C:\\Users\\gsmin2020\\Desktop\\SoongSilUniv\\2-1\\Data_structure\\lfu_sim\\linkbench.trc", 'r') as data_file:
     cache = Heap()
     for line in data_file.readlines():
       lpn = line.split()[0]
