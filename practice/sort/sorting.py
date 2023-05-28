@@ -18,14 +18,14 @@ def do_sort(input_file):
         print(A[i], end=' ')
     print()
 
+    print("Quick sort:", end=' ')
     B = quickSort(A, iscache)
-
     for i in range(10):
         print(f"({B[i]}, {iscache[B[i]]})", end=' ')
     print()
 
     C = mergeSort(A, iscache)
-
+    print("Merge sort:", end=' ')
     for i in range(10):
         print(f"({C[i]}, {iscache[C[i]]})", end=' ')
     print()
@@ -33,4 +33,4 @@ def do_sort(input_file):
 
 
 if __name__ == "__main__":
-    do_sort("C:\\Users\\gsmin2020\\Desktop\\SoongSilUniv\\2-1\\Data_structure\\practice\\linkbench_short.trc")
+    do_sort("linkbench_short.trc")
