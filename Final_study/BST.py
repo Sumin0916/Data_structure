@@ -3,7 +3,7 @@ class BinarySearchTree:
         self.__root = None
 
     def search(self, x) -> "TreeNode":
-        return self.__searchItem(self.__root, x)
+        return self.__loopSearch(self.__root, x)
 
     def __searchItem(self, tNode:"TreeNode", x):
         if tNode == None:
@@ -14,7 +14,18 @@ class BinarySearchTree:
             return self.__searchItem(tNode.left, x)
         else:
             return self.__searchItem(tNode.right, x)
-
+    
+    def __loopSearch(self, tNode:"TreeNode", x):
+        nowNode = tNode
+        while nowNode != None:
+            if nowNode.item == x:
+                return nowNode
+            elif nowNode.item < x:
+                nowNode = nowNode.right
+            else:
+                nowNode = nowNode.left
+        return None
+            
     def insert(self, newItem):
         self.__root = self.__insertItem(self.__root, newItem)
 
@@ -95,6 +106,7 @@ bst1.insert(30)
 bst1.insert(77)
 bst1.insert(15)
 bst1.insert(40)
-bst1.delete(7750)
+bst1.delete(7550)
 bst1.delete(10)
 bst1.inorder(bst1.getRoot())
+print(bst1.search(40).item)
