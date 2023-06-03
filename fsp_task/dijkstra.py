@@ -25,14 +25,15 @@ class FindShortestPath:
         self.__parent = [i for i in range(self.__nodeNum+1)]
     
     def find_path(self, start):
-        queue = []
+        visited = [False for _ in range(self.__nodeNum+1)]
         self.__dist[start] = 0
+        queue = []
         heappush(queue, (0, start))
-
         while queue:
             distance, nowNode = heappop(queue)
-            if distance > self.__dist[nowNode]:
+            if visited[nowNode]:
                 continue
+            visited[nowNode] = True
             for nextNode, cost in self.__adjList[nowNode]:
                 nextDist = distance + cost
                 if nextDist < self.__dist[nextNode]:
